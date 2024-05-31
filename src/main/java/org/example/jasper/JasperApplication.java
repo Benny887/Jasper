@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.example.jasper.model.MacroNutrient;
 import org.example.jasper.model.Nutrition;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,7 +23,7 @@ public class JasperApplication {
 
     public static void main(String[] args) throws JRException {
         SpringApplication.run(JasperApplication.class, args);
-        String filePath = "/home/viktor/IdeaProjects/Jasper/src/main/resources/jasper.jrxml"; //- таблицы
+        String filePathTable = "/home/viktor/IdeaProjects/Jasper/src/main/resources/jasper_table.jrxml"; //- таблицы
 
         Nutrition protein = new Nutrition("Protein", 62, 83, "g");
         Nutrition carbohydrates = new Nutrition("Carbohydrates", 22, 33, "g");
@@ -49,22 +50,24 @@ public class JasperApplication {
 
         JRBeanCollectionDataSource nutrientDataSource = new JRBeanCollectionDataSource(nutritionList);
 
-//        String filePath = "/home/viktor/IdeaProjects/Jasper/src/main/resources/jasper_1.jrxml";  графики
+        //-------------------------------------------------------------------------------------------------------//
 
-//        EltexChart eltexChart1 = new EltexChart("eltex1", 20);
-//        EltexChart eltexChart2 = new EltexChart("eltex2", 40);
-//        EltexChart eltexChart3 = new EltexChart("eltex3", 60);
+        String filePathChart = "/home/viktor/IdeaProjects/Jasper/src/main/resources/jasper_chart.jrxml"; // графики
 
-//        List<EltexChart> eltexChartList = new ArrayList<>();
-//        eltexChartList.add(eltexChart1);
-//        eltexChartList.add(eltexChart2);
-//        eltexChartList.add(eltexChart3);
+        MacroNutrient carbMacroNutrition = new MacroNutrient("Carbohydrates", 48);
+        MacroNutrient fatMacroNutrition = new MacroNutrient("Fat", 32);
+        MacroNutrient ProteinMacroNutrition = new MacroNutrient("Protein", 20);
 
 
-//        JRBeanCollectionDataSource chartDataSource = new JRBeanCollectionDataSource(eltexChartList);
+        List<MacroNutrient> macroNutrientList = new ArrayList<>();
+        macroNutrientList.add(carbMacroNutrition);
+        macroNutrientList.add(fatMacroNutrition);
+        macroNutrientList.add(ProteinMacroNutrition);
 
 
+        JRBeanCollectionDataSource macroNutrientDatasource = new JRBeanCollectionDataSource(macroNutrientList);
 
+        //-------------------------------------------------------------------------------------------------------//
 
         Map<String, Object> params = new HashMap<>();// входные параметры на лицевике
         params.put("firstName", "John");
@@ -73,9 +76,9 @@ public class JasperApplication {
         params.put("age", 50);
 
         params.put("nutritionDataSet", nutrientDataSource);
-//        params.put("JasperChartDS", chartDataSource);
+        params.put("macroNutrientDataSet", macroNutrientDatasource);
 
-        JasperReport report = JasperCompileManager.compileReport(filePath);
+        JasperReport report = JasperCompileManager.compileReport(filePathChart);
         JasperPrint print = JasperFillManager.fillReport(report, params, new JREmptyDataSource());
         JasperExportManager.exportReportToPdfFile(print, "/home/viktor/IdeaProjects/Jasper/report.pdf");
         System.out.println("Report has been exported successfully");
