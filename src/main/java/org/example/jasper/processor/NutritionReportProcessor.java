@@ -1,7 +1,9 @@
 package org.example.jasper.processor;
 
+import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -14,18 +16,27 @@ import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import org.example.jasper.model.Food;
 import org.example.jasper.model.MacroNutrient;
 import org.example.jasper.model.Nutrition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.MessageSourceResourceBundle;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class NutritionReportProcessor {
-    public ByteArrayOutputStream generateReport() throws JRException {
-        String filePathChartSubrepo = "/home/viktor/IdeaProjects/Jasper/src/main/resources/jasper_chart_and_subreport.jrxml"; // табл граф подотчеты
+
+    @Autowired
+    private final MessageSource messageSource;
+
+    public ByteArrayOutputStream generateReport(Locale locale) throws JRException {
+        String filePathChartSubrepo = "/home/viktor/IdeaProjects/Jasper/src/main/resources/jasper_chart_and_subreport_http.jrxml"; // табл граф подотчеты
 
         Nutrition protein = new Nutrition("Protein", 62, 83, "g");
         Nutrition carbohydrates = new Nutrition("Carbohydrates", 22, 33, "g");
@@ -81,6 +92,8 @@ public class NutritionReportProcessor {
         params.put("foodReport", getFoodReport());
         params.put("foodParameter", getFoodParameter());
 
+        setLocalizedParameters(params, locale);
+
         JasperReport report = JasperCompileManager.compileReport(filePathChartSubrepo);
         JasperPrint print = JasperFillManager.fillReport(report, params, new JREmptyDataSource());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -95,6 +108,13 @@ public class NutritionReportProcessor {
     }
 
     //-------------------------------------------------------------------------------------------------------// для подотчета
+
+    private void setLocalizedParameters(Map<String, Object> parameters, Locale locale) {
+        MessageSourceResourceBundle resourceBundle = new MessageSourceResourceBundle(messageSource, locale);
+        parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+        parameters.put(JRParameter.REPORT_LOCALE, locale);
+    }
+
 
     private JRBeanCollectionDataSource getFoodDataSource() {
         List<Food> foodList = new ArrayList<>();

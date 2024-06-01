@@ -7,19 +7,23 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
 public class NutritionController {
     private final NutritionReportProcessor processor;
 
-    @GetMapping("/report")
-    public ResponseEntity<byte[]> getNutritionReport() throws JRException {
-        ByteArrayOutputStream reportStream = processor.generateReport();
+    @GetMapping("/report") //(http://localhost:8080/report?lang=fr_FR)
+    public ResponseEntity<byte[]> getNutritionReport(@RequestParam("lang") String language) throws JRException {
+        Locale locale = StringUtils.parseLocaleString(language);
+        ByteArrayOutputStream reportStream = processor.generateReport(locale);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
 
