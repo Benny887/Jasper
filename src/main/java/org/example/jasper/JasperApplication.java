@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.example.jasper.model.Food;
 import org.example.jasper.model.MacroNutrient;
 import org.example.jasper.model.Nutrition;
 import org.springframework.boot.SpringApplication;
@@ -69,6 +70,8 @@ public class JasperApplication {
 
         //-------------------------------------------------------------------------------------------------------//
 
+        String filePathChartSubrepo = "/home/viktor/IdeaProjects/Jasper/src/main/resources/jasper_chart_and_subreport.jrxml"; // табл граф подотчеты
+
         Map<String, Object> params = new HashMap<>();// входные параметры на лицевике
         params.put("firstName", "John");
         params.put("lastName", "Smith");
@@ -78,10 +81,55 @@ public class JasperApplication {
         params.put("nutritionDataSet", nutrientDataSource);
         params.put("macroNutrientDataSet", macroNutrientDatasource);
 
-        JasperReport report = JasperCompileManager.compileReport(filePathChart);
+        params.put("foodReport", getFoodReport());
+        params.put("foodParameter", getFoodParameter());
+
+        JasperReport report = JasperCompileManager.compileReport(filePathChartSubrepo);
         JasperPrint print = JasperFillManager.fillReport(report, params, new JREmptyDataSource());
         JasperExportManager.exportReportToPdfFile(print, "/home/viktor/IdeaProjects/Jasper/report.pdf");
         System.out.println("Report has been exported successfully");
+    }
+
+    //-------------------------------------------------------------------------------------------------------// для подотчета
+
+    private static JRBeanCollectionDataSource getFoodDataSource() {
+        List<Food> foodList = new ArrayList<>();
+        Food banana = new Food("banana", "breakfast", 0,28,1);
+        Food avocado = new Food("avocado", "breakfast", 22,13,3);
+        Food milk = new Food("milk", "breakfast", 8,12,8);
+        Food chiken = new Food("chiken", "lunch", 2,0,26);
+        Food rice = new Food("rice", "lunch", 0,45,26);
+        Food egg = new Food("egg", "lunch", 5,0,6);
+        Food potato = new Food("potato", "lunch", 5,37,4);
+        Food oats = new Food("oat", "dinner", 5,51,13);
+
+        foodList.add(banana);
+        foodList.add(avocado);
+        foodList.add(milk);
+        foodList.add(chiken);
+        foodList.add(rice);
+        foodList.add(egg);
+        foodList.add(potato);
+        foodList.add(oats);
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(foodList);
+        return dataSource;
+    }
+
+    private static Map getFoodParameter() {
+        Map<String, Object> foodParameter = new HashMap<>();
+        foodParameter.put("foodDataset", getFoodDataSource());
+        return foodParameter;
+    }
+
+    private static JasperReport getFoodReport() {
+        String filePath = "/home/viktor/IdeaProjects/Jasper/src/main/resources/food_nutrition.jrxml";
+        JasperReport report = null;
+        try {
+            report = JasperCompileManager.compileReport(filePath);
+        } catch (JRException e) {
+            throw new RuntimeException(e);
+        }
+        return report;
     }
 
 }
