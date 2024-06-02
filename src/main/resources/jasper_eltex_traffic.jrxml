@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="jasper_eltex_traffic" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="37e33e90-346d-4f36-8c49-1a96226e9920">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+    <subDataset name="eltexTrafficDataSet" uuid="1a53271f-242f-4c32-821e-60a65fdc50b6">
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="date" class="java.lang.String"/>
+        <field name="data" class="java.lang.Long"/>
+        <field name="input" class="java.lang.String"/>
+    </subDataset>
+    <parameter name="eltexTrafficDataSet" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="79" splitType="Stretch"/>
+    </title>
+    <detail>
+        <band height="383" splitType="Stretch">
+            <barChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="0" y="54" width="550" height="329" uuid="0d35e7b0-b9ca-454b-9d2c-8b5e1e06ef8f"/>
+                    <chartTitle/>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <categoryDataset>
+                    <dataset>
+                        <datasetRun subDataset="eltexTrafficDataSet" uuid="3a6d6aea-429c-4cbe-b8f8-1f297777f847">
+                            <dataSourceExpression><![CDATA[$P{eltexTrafficDataSet}]]></dataSourceExpression>
+                        </datasetRun>
+                    </dataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA[$F{input}]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{date}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{data}]]></valueExpression>
+                        <labelExpression><![CDATA[$F{input}]]></labelExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot labelRotation="45.0"/>
+                    <itemLabel/>
+                    <categoryAxisLabelExpression><![CDATA["Период"]]></categoryAxisLabelExpression>
+                    <categoryAxisFormat labelRotation="45.0">
+                        <axisFormat labelColor="#000000" tickLabelColor="#000000" verticalTickLabels="true" axisLineColor="#000000"/>
+                    </categoryAxisFormat>
+                    <valueAxisLabelExpression><![CDATA["Сумм. трафик, Б"]]></valueAxisLabelExpression>
+                    <valueAxisFormat>
+                        <axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+                    </valueAxisFormat>
+                </barPlot>
+            </barChart>
+        </band>
+    </detail>
+    <summary>
+        <band height="42" splitType="Stretch"/>
+    </summary>
+</jasperReport>
